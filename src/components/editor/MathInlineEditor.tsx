@@ -25,31 +25,14 @@ export function MathInlineEditor({ updateMathAt }: Props) {
   return (
     <div
       ref={panelRef}
-      style={{
-        position: 'fixed', bottom: 16, right: 16,
-        width: 300, zIndex: 9999,
-        background: '#252526',
-        border: '1px solid #444',
-        borderRadius: 6,
-        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-        padding: 14,
-      }}
+      className="fixed z-50 bottom-4 right-4 w-80 bg-gray-800 border border-gray-600 rounded-lg shadow-2xl p-4"
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-        <span style={{ fontSize: 12, fontWeight: 600, color: '#ccc', letterSpacing: '0.04em' }}>
-          EDIT MATH
-        </span>
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-sm font-medium text-gray-300">Edit Math</span>
         <button
           onClick={closeMathEdit}
-          style={{
-            background: 'none', border: 'none', cursor: 'pointer',
-            color: '#777', fontSize: 18, lineHeight: 1, padding: 0,
-          }}
-          onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
-          onMouseLeave={e => (e.currentTarget.style.color = '#777')}
-        >
-          ×
-        </button>
+          className="text-gray-500 hover:text-gray-200 text-lg leading-none"
+        >×</button>
       </div>
       <LatexInput
         value={mathEdit.latex}

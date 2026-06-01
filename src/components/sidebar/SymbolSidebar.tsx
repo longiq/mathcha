@@ -22,88 +22,45 @@ export function SymbolSidebar() {
   }, [search, activeCategory]);
 
   return (
-    <div style={{ display: 'flex', height: '100%', background: '#252526' }}>
-      {/* Icon tabs column */}
-      <div style={{
-        width: 36,
-        background: '#1e1e1e',
-        borderRight: '1px solid #333',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        paddingTop: 4,
-        gap: 1,
-        flexShrink: 0,
-      }}>
-        {CATEGORIES.map(cat => (
-          <button
-            key={cat.id}
-            onClick={() => { setActiveCategory(cat.id); setSearch(''); }}
-            title={cat.label}
-            style={{
-              width: 32,
-              height: 32,
-              background: activeCategory === cat.id && !search ? '#3a8ef6' : 'none',
-              border: 'none',
-              borderRadius: 4,
-              cursor: 'pointer',
-              color: activeCategory === cat.id && !search ? '#fff' : '#888',
-              fontSize: 15,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'background 0.1s, color 0.1s',
-            }}
-            onMouseEnter={e => {
-              if (!(activeCategory === cat.id && !search)) {
-                e.currentTarget.style.background = '#333';
-                e.currentTarget.style.color = '#ccc';
-              }
-            }}
-            onMouseLeave={e => {
-              if (!(activeCategory === cat.id && !search)) {
-                e.currentTarget.style.background = 'none';
-                e.currentTarget.style.color = '#888';
-              }
-            }}
-          >
-            {cat.icon}
-          </button>
-        ))}
+    <div className="flex flex-col h-full bg-gray-900 border-r border-gray-700">
+      <div className="px-3 py-3 border-b border-gray-700">
+        <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Symbols</span>
       </div>
 
-      {/* Symbol panel */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {/* Category label */}
-        <div style={{
-          padding: '6px 8px 4px',
-          fontSize: 11,
-          fontWeight: 600,
-          color: '#888',
-          textTransform: 'uppercase',
-          letterSpacing: '0.06em',
-          borderBottom: '1px solid #333',
-          flexShrink: 0,
-        }}>
-          {search ? 'Search results' : CATEGORIES.find(c => c.id === activeCategory)?.label}
-        </div>
+      <SymbolSearch value={search} onChange={setSearch} />
 
-        {/* Search */}
-        <SymbolSearch value={search} onChange={setSearch} />
-
-        {/* Grid */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: 4 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1 }}>
-            {filtered.map(symbol => (
-              <SymbolButton key={symbol.id} symbol={symbol} onClick={insertSymbol} />
-            ))}
-          </div>
-          {filtered.length === 0 && (
-            <div style={{ color: '#666', fontSize: 12, textAlign: 'center', padding: '20px 8px' }}>
-              No symbols found
-            </div>
-          )}
+      {!search && (
+        <div className="flex flex-col border-b border-gray-700">
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={`flex items-center gap-2 px-3 py-1.5 text-sm transition-colors ${
+                activeCategory === cat.id
+                  ? 'bg-sky-600/20 text-sky-400 border-l-2 border-sky-500'
+                  : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800 border-l-2 border-transparent'
+              }`}
+            >
+              <span className="text-base w-5 text-center">{cat.icon}</span>
+              <span>{cat.label}</span>
+            </button>
+          ))}
         </div>
+      )}
+
+      <div className="flex-1 overflow-y-auto p-2">
+        <div className="grid grid-cols-4 gap-0.5">
+          {filtered.map(symbol => (
+            <SymbolButton
+              key={symbol.id}
+              symbol={symbol}
+              onClick={insertSymbol}
+            />
+          ))}
+        </div>
+        {filtered.length === 0 && (
+          <div className="text-center text-gray-500 text-sm py-4">No symbols found</div>
+        )}
       </div>
     </div>
   );

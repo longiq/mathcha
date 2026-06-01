@@ -20,33 +20,23 @@ export function LatexInput({ value, onChange, display = false, placeholder, auto
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+    <div className="flex flex-col gap-2">
       <textarea
+        className="w-full bg-gray-800 text-gray-100 border border-gray-600 rounded p-2 font-mono text-sm resize-none focus:outline-none focus:border-sky-500 min-h-[60px]"
         value={draft}
         onChange={e => handleChange(e.target.value)}
         placeholder={placeholder || 'Enter LaTeX...'}
         autoFocus={autoFocus}
+        onKeyDown={e => { if (e.key === 'Escape') e.currentTarget.blur(); }}
         rows={3}
         spellCheck={false}
-        style={{
-          width: '100%', background: '#1e1e1e', color: '#e0e0e0',
-          border: '1px solid #444', borderRadius: 4,
-          padding: '7px 10px', fontFamily: 'monospace', fontSize: 13,
-          resize: 'vertical', outline: 'none', boxSizing: 'border-box',
-          minHeight: 60,
-        }}
-        onFocus={e => (e.currentTarget.style.borderColor = '#3a8ef6')}
-        onBlur={e => (e.currentTarget.style.borderColor = '#444')}
       />
-      <div style={{
-        minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: '#f8f8f8', borderRadius: 4, padding: '8px 12px',
-        border: '1px solid #e0e0e0', color: '#1a1a1a',
-      }}>
-        {draft
-          ? <MathRenderer latex={draft} display={display} />
-          : <span style={{ color: '#aaa', fontSize: 12, fontStyle: 'italic' }}>Preview</span>
-        }
+      <div className="min-h-[40px] flex items-center justify-center bg-gray-900 rounded p-2 border border-gray-700">
+        {draft ? (
+          <MathRenderer latex={draft} display={display} />
+        ) : (
+          <span className="text-gray-500 text-sm">Preview appears here</span>
+        )}
       </div>
     </div>
   );

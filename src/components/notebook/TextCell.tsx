@@ -14,20 +14,12 @@ export function TextCell({ cellId, initialContent }: Props) {
 
   return (
     <div
+      className={`relative px-2 py-1 rounded transition-colors ${isActive ? 'bg-gray-800/50' : 'hover:bg-gray-800/20'}`}
       onClick={focus}
-      style={{
-        position: 'relative',
-        padding: '4px 6px',
-        borderRadius: 3,
-        background: isActive ? 'rgba(58,142,246,0.04)' : 'transparent',
-        borderLeft: isActive ? '2px solid #3a8ef6' : '2px solid transparent',
-        cursor: 'text',
-        transition: 'all 0.1s',
-      }}
     >
       <div
         ref={containerRef}
-        style={{ minHeight: '1.8em', lineHeight: 1.8, color: '#1a1a1a' }}
+        className="min-h-[1.8em] text-gray-100 leading-relaxed"
       />
       {isActive && mathEdit && mathEdit.cellId === cellId && (
         <MathInlineEditor updateMathAt={updateMathAt} />

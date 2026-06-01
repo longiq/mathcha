@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Download, FilePlus, PanelLeftClose, PanelLeft } from 'lucide-react';
+import { Download, FilePlus, BookOpen, PanelLeft } from 'lucide-react';
 import { useNotebookStore } from '../../store/notebookStore';
 import { exportToLatex } from '../../lib/export/toLatex';
 import { useEditorStore } from '../../store/editorStore';
 
 export function TopBar() {
   const { notebook, setTitle, newNotebook } = useNotebookStore();
-  const { toggleSidebar, sidebarOpen } = useEditorStore();
+  const { toggleSidebar } = useEditorStore();
   const [editing, setEditing] = useState(false);
 
   const handleExportLatex = () => {
@@ -21,101 +21,57 @@ export function TopBar() {
   };
 
   return (
-    <div style={{
-      height: 40,
-      background: '#333',
-      borderBottom: '1px solid #222',
-      display: 'flex',
-      alignItems: 'center',
-      padding: '0 10px',
-      gap: 8,
-      flexShrink: 0,
-      userSelect: 'none',
-    }}>
-      {/* Logo */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginRight: 8 }}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <rect x="2" y="2" width="20" height="20" rx="4" fill="#3a8ef6"/>
-          <text x="5" y="17" fontSize="14" fontWeight="bold" fill="white" fontFamily="serif">M</text>
-        </svg>
-        <span style={{ color: '#fff', fontWeight: 700, fontSize: 14, letterSpacing: 0.3 }}>Mathcha</span>
-      </div>
-
-      <div style={{ width: 1, height: 18, background: '#555' }} />
-
-      {/* Toggle sidebar */}
+    <div className="flex items-center gap-3 px-4 h-12 bg-gray-900 border-b border-gray-700 flex-shrink-0">
       <button
         onClick={toggleSidebar}
-        title={sidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
-        style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#aaa', padding: '2px 4px', display: 'flex', alignItems: 'center', borderRadius: 3 }}
-        onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
-        onMouseLeave={e => (e.currentTarget.style.color = '#aaa')}
+        className="text-gray-400 hover:text-gray-200 transition-colors"
+        title="Toggle sidebar"
       >
-        {sidebarOpen ? <PanelLeftClose size={16} /> : <PanelLeft size={16} />}
+        <PanelLeft size={18} />
       </button>
 
-      <div style={{ width: 1, height: 18, background: '#555' }} />
+      <div className="flex items-center gap-2">
+        <BookOpen size={18} className="text-sky-400" />
+        <span className="text-sky-400 font-bold text-sm">Mathcha</span>
+      </div>
 
-      {/* Notebook title */}
+      <div className="w-px h-5 bg-gray-700" />
+
       {editing ? (
         <input
-          autoFocus
+          className="bg-transparent text-gray-100 text-sm font-medium border-b border-sky-500 outline-none px-1"
           value={notebook.title}
           onChange={e => setTitle(e.target.value)}
           onBlur={() => setEditing(false)}
-          onKeyDown={e => { if (e.key === 'Enter' || e.key === 'Escape') setEditing(false); }}
-          style={{
-            background: '#444',
-            border: '1px solid #3a8ef6',
-            borderRadius: 3,
-            color: '#fff',
-            fontSize: 13,
-            padding: '2px 6px',
-            outline: 'none',
-            width: 200,
-          }}
+          onKeyDown={e => { if (e.key === 'Enter') setEditing(false); }}
+          autoFocus
         />
       ) : (
         <button
+          className="text-gray-200 text-sm font-medium hover:text-white transition-colors"
           onClick={() => setEditing(true)}
           title="Click to rename"
-          style={{
-            background: 'none', border: 'none', cursor: 'pointer',
-            color: '#ddd', fontSize: 13, padding: '2px 4px',
-            borderRadius: 3, maxWidth: 260, overflow: 'hidden',
-            textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-          }}
-          onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
-          onMouseLeave={e => (e.currentTarget.style.color = '#ddd')}
         >
           {notebook.title}
         </button>
       )}
 
-      {/* Spacer */}
-      <div style={{ flex: 1 }} />
-
-      {/* Actions */}
-      <TopBarBtn icon={<FilePlus size={14} />} label="New" onClick={newNotebook} />
-      <TopBarBtn icon={<Download size={14} />} label="Export LaTeX" onClick={handleExportLatex} />
+      <div className="ml-auto flex items-center gap-2">
+        <button
+          onClick={newNotebook}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-400 hover:text-gray-200 hover:bg-gray-800 rounded transition-colors"
+          title="New notebook"
+        >
+          <FilePlus size={14} /> New
+        </button>
+        <button
+          onClick={handleExportLatex}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-400 hover:text-gray-200 hover:bg-gray-800 rounded transition-colors"
+          title="Export as LaTeX"
+        >
+          <Download size={14} /> Export LaTeX
+        </button>
+      </div>
     </div>
-  );
-}
-
-function TopBarBtn({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        display: 'flex', alignItems: 'center', gap: 4,
-        background: 'none', border: '1px solid #555', borderRadius: 3,
-        color: '#ccc', fontSize: 12, padding: '3px 8px', cursor: 'pointer',
-        transition: 'all 0.1s',
-      }}
-      onMouseEnter={e => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.borderColor = '#888'; }}
-      onMouseLeave={e => { e.currentTarget.style.color = '#ccc'; e.currentTarget.style.borderColor = '#555'; }}
-    >
-      {icon}{label}
-    </button>
   );
 }
