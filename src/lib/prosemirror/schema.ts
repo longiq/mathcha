@@ -47,6 +47,7 @@ export const mathSchema = new Schema({
       },
     },
 
+<<<<<<< HEAD
     graph_block: {
       attrs: {
         expressions: { default: '[]' },
@@ -85,6 +86,8 @@ export const mathSchema = new Schema({
       },
     },
 
+=======
+>>>>>>> origin/main
     bullet_list: {
       content: 'list_item+',
       group: 'block',

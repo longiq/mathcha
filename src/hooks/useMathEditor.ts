@@ -5,14 +5,20 @@ import { splitBlock } from 'prosemirror-commands';
 import { Node } from 'prosemirror-model';
 import { mathSchema, emptyDoc } from '../lib/prosemirror/schema';
 import { MathNodeView, MathBlockNodeView } from '../lib/prosemirror/mathNodeView';
+<<<<<<< HEAD
 import { GraphNodeView } from '../lib/prosemirror/graphNodeView';
+=======
+>>>>>>> origin/main
 import { buildPlugins } from '../lib/prosemirror/plugins';
 import {
   insertMathInline,
   insertMathBlock,
   updateMathNode,
+<<<<<<< HEAD
   insertGraph,
   updateGraphNode,
+=======
+>>>>>>> origin/main
   toggleMark,
   setHeading,
   setAlignment,
@@ -28,7 +34,11 @@ export function useMathEditor() {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const { docJson, setDocJson } = useDocumentStore();
+<<<<<<< HEAD
   const { openMathEdit, pendingSymbol, clearPendingSymbol, setEditorApi, openGraphEdit } = useEditorStore();
+=======
+  const { openMathEdit, pendingSymbol, clearPendingSymbol, setEditorApi } = useEditorStore();
+>>>>>>> origin/main
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -57,10 +67,13 @@ export function useMathEditor() {
         math_block: (node, view, getPos) =>
           new MathBlockNodeView(node, view, getPos, (latex, pos) => {
             openMathEdit(latex, pos);
+<<<<<<< HEAD
           }),
         graph_block: (node, view, getPos) =>
           new GraphNodeView(node, view, getPos, (attrs, pos) => {
             openGraphEdit(attrs, pos);
+=======
+>>>>>>> origin/main
           }),
       },
       dispatchTransaction(tr) {
@@ -106,14 +119,18 @@ export function useMathEditor() {
         setFontSize(size)(view.state, view.dispatch, view);
         view.focus();
       },
+<<<<<<< HEAD
       insertGraphCmd: (exprs = ['sin(x)', 'cos(x)']) => {
         insertGraph(exprs)(view.state, view.dispatch, view);
         view.focus();
       },
+=======
+>>>>>>> origin/main
     };
 
     setEditorApi(api);
 
+<<<<<<< HEAD
     // Expose automation API for testing
     (window as any).__mathcha = {
       insertInline: (latex: string) => { insertMathInline(latex)(view.state, view.dispatch, view); view.focus(); },
@@ -127,6 +144,8 @@ export function useMathEditor() {
       },
     };
 
+=======
+>>>>>>> origin/main
     return () => {
       view.destroy();
       viewRef.current = null;
@@ -150,6 +169,7 @@ export function useMathEditor() {
     updateMathNode(pos, latex)(view.state, view.dispatch);
   }, []);
 
+<<<<<<< HEAD
   const updateGraphAt = useCallback((pos: number, attrs: Record<string, unknown>) => {
     const view = viewRef.current;
     if (!view) return;
@@ -157,4 +177,7 @@ export function useMathEditor() {
   }, []);
 
   return { containerRef, viewRef, updateMathAt, updateGraphAt };
+=======
+  return { containerRef, viewRef, updateMathAt };
+>>>>>>> origin/main
 }
