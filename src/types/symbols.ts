@@ -1,12 +1,4 @@
-export type SymbolCategory =
-  | 'greek'
-  | 'operators'
-  | 'relations'
-  | 'arrows'
-  | 'structures'
-  | 'accents'
-  | 'delimiters'
-  | 'misc';
+export type SymbolCategory = 'greek' | 'operators' | 'relations' | 'arrows' | 'structures' | 'accents' | 'delimiters' | 'misc';
 
 export interface MathSymbol {
   id: string;
@@ -14,5 +6,5 @@ export interface MathSymbol {
   label: string;
   latex: string;
   display: string;
-  keywords: string[];
+  keywords?: string[];
 }
