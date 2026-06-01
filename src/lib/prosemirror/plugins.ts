@@ -1,10 +1,9 @@
 import { Plugin } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
-import { history } from 'prosemirror-history';
+import { history, undo, redo } from 'prosemirror-history';
 import { keymap } from 'prosemirror-keymap';
 import { baseKeymap } from 'prosemirror-commands';
 import { inputRules, textblockTypeInputRule, wrappingInputRule } from 'prosemirror-inputrules';
-import { undoInputRule } from 'prosemirror-inputrules';
 import {
   insertMathInline,
   toggleMark,
@@ -37,8 +36,7 @@ export const placeholderPlugin = new Plugin({
 function buildInputRules() {
   return inputRules({
     rules: [
-      undoInputRule,
-      // ### → h3
+      // ### → h3 (must come before ## and #)
       textblockTypeInputRule(/^###\s$/, mathSchema.nodes.heading, () => ({ level: 3 })),
       // ## → h2
       textblockTypeInputRule(/^##\s$/, mathSchema.nodes.heading, () => ({ level: 2 })),
@@ -71,18 +69,11 @@ export function buildPlugins() {
         insertMathInline()(state, dispatch, view);
         return true;
       },
-      'Mod-z': (state, dispatch, view) => {
-        const { undo } = require('prosemirror-history');
-        return undo(state, dispatch, view);
-      },
-      'Mod-y': (state, dispatch, view) => {
-        const { redo } = require('prosemirror-history');
-        return redo(state, dispatch, view);
-      },
-      'Mod-Shift-z': (state, dispatch, view) => {
-        const { redo } = require('prosemirror-history');
-        return redo(state, dispatch, view);
-      },
+      'Mod-z': undo,
+      'Mod-y': redo,
+      'Mod-Shift-z': redo,
+      'Mod-Shift-l': toggleBulletList(),
+      'Mod-Shift-o': toggleOrderedList(),
     }),
   ];
 }

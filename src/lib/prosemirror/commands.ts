@@ -1,7 +1,7 @@
 import type { Command } from 'prosemirror-state';
 import { NodeSelection, TextSelection } from 'prosemirror-state';
 import { mathSchema } from './schema';
-import { wrapInList, liftListItem, sinkListItem } from 'prosemirror-schema-list';
+import { wrapInList, liftListItem } from 'prosemirror-schema-list';
 
 export const insertMathInline = (latex = ''): Command => (state, dispatch) => {
   const mathNode = mathSchema.nodes.math_inline.create({ latex });

@@ -1,89 +1,117 @@
-import { Bold, Italic, Underline } from 'lucide-react';
 import { useEditorStore } from '../../store/editorStore';
 
-const QUICK_MATH = [
-  { label: 'x²', latex: 'x^{2}', title: 'Superscript' },
-  { label: 'xₙ', latex: 'x_{n}', title: 'Subscript' },
-  { label: '½', latex: '\\frac{a}{b}', title: 'Fraction' },
-  { label: '√', latex: '\\sqrt{x}', title: 'Square root' },
-  { label: '∑', latex: '\\sum_{i=1}^{n}', title: 'Sum' },
-  { label: '∫', latex: '\\int_{a}^{b}', title: 'Integral' },
-  { label: '∏', latex: '\\prod_{i=1}^{n}', title: 'Product' },
-  { label: 'lim', latex: '\\lim_{x \\to 0}', title: 'Limit' },
-  { label: '∂', latex: '\\frac{\\partial f}{\\partial x}', title: 'Partial derivative' },
-  { label: '∞', latex: '\\infty', title: 'Infinity' },
-  { label: '∇', latex: '\\nabla', title: 'Nabla' },
-  { label: 'e^x', latex: 'e^{x}', title: 'Exponential' },
-  { label: 'log', latex: '\\log_{b}(x)', title: 'Logarithm' },
-  { label: 'sin', latex: '\\sin(x)', title: 'Sine' },
-  { label: '[]', latex: '\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}', title: 'Matrix 2x2' },
-];
-
 export function FormatToolbar() {
-  const { insertSymbol } = useEditorStore();
+  const { editorApi } = useEditorStore();
 
-  return (
-    <div style={{
-      height: 36,
-      background: '#2c2c2c',
-      borderBottom: '1px solid #222',
-      display: 'flex',
-      alignItems: 'center',
-      padding: '0 10px',
-      gap: 2,
-      flexShrink: 0,
-      overflowX: 'auto',
-    }}>
-      <TBtn title="Bold (Ctrl+B)" onClick={() => document.execCommand('bold')}>
-        <Bold size={13} />
-      </TBtn>
-      <TBtn title="Italic (Ctrl+I)" onClick={() => document.execCommand('italic')}>
-        <Italic size={13} />
-      </TBtn>
-      <TBtn title="Underline (Ctrl+U)" onClick={() => document.execCommand('underline')}>
-        <Underline size={13} />
-      </TBtn>
-
-      <Divider />
-
-      {QUICK_MATH.map(m => (
-        <TBtn key={m.latex} title={m.title} onClick={() => insertSymbol(m.latex)} mono>
-          {m.label}
-        </TBtn>
-      ))}
-    </div>
-  );
-}
-
-function TBtn({ children, onClick, title, mono }: {
-  children: React.ReactNode;
-  onClick: () => void;
-  title?: string;
-  mono?: boolean;
-}) {
-  return (
+  const btn = (
+    label: string,
+    title: string,
+    onClick: () => void,
+    mono = false,
+  ) => (
     <button
-      onClick={onClick}
+      key={label + title}
       title={title}
+      onMouseDown={e => {
+        e.preventDefault(); // prevent blur of editor
+        onClick();
+      }}
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         background: 'none', border: 'none', borderRadius: 3,
         cursor: 'pointer', color: '#bbb',
-        height: 26, minWidth: 28, padding: '0 5px',
+        height: 26, minWidth: 26, padding: '0 5px',
         fontSize: mono ? 12 : 13,
         fontFamily: mono ? 'monospace' : 'inherit',
         fontWeight: 600,
         transition: 'background 0.1s, color 0.1s',
         whiteSpace: 'nowrap',
+        flexShrink: 0,
       }}
-      onMouseEnter={e => { e.currentTarget.style.background = '#3a3a3a'; e.currentTarget.style.color = '#fff'; }}
+      onMouseEnter={e => { e.currentTarget.style.background = '#4a4a4a'; e.currentTarget.style.color = '#fff'; }}
       onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = '#bbb'; }}
     >
-      {children}
+      {label}
     </button>
   );
-}
 
-function Divider() {
-  return <div style={{ width: 1, height: 20, background: '#444', margin: '0 4px' }} />;
+  const sep = () => (
+    <div key={Math.random()} style={{ width: 1, height: 20, background: '#555', margin: '0 3px', flexShrink: 0 }} />
+  );
+
+  return (
+    <div style={{
+      height: 36,
+      background: '#3d3d3d',
+      borderBottom: '1px solid #2a2a2a',
+      display: 'flex',
+      alignItems: 'center',
+      padding: '0 8px',
+      gap: 1,
+      flexShrink: 0,
+      overflowX: 'auto',
+    }}>
+      {/* Heading selector */}
+      <select
+        title="Paragraph style"
+        onMouseDown={e => e.stopPropagation()}
+        onChange={e => {
+          const val = parseInt(e.target.value) as 0 | 1 | 2 | 3;
+          editorApi?.setHeadingLevel(val);
+        }}
+        defaultValue={0}
+        style={{
+          background: '#2e2e2e',
+          color: '#ccc',
+          border: '1px solid #555',
+          borderRadius: 3,
+          fontSize: 12,
+          height: 24,
+          padding: '0 4px',
+          cursor: 'pointer',
+          flexShrink: 0,
+          outline: 'none',
+        }}
+      >
+        <option value={0}>Normal</option>
+        <option value={1}>H1</option>
+        <option value={2}>H2</option>
+        <option value={3}>H3</option>
+      </select>
+
+      {sep()}
+
+      {/* Font size */}
+      {btn('A−', 'Small text', () => editorApi?.setFontSize('small'), true)}
+      {btn('A', 'Normal text', () => editorApi?.setFontSize('normal'), true)}
+      {btn('A+', 'Large text', () => editorApi?.setFontSize('large'), true)}
+
+      {sep()}
+
+      {/* Text formatting */}
+      {btn('B', 'Bold (Ctrl+B)', () => editorApi?.execFormat('bold'))}
+      {btn('I', 'Italic (Ctrl+I)', () => editorApi?.execFormat('italic'))}
+      {btn('U', 'Underline (Ctrl+U)', () => editorApi?.execFormat('underline'))}
+      {btn('S', 'Strikethrough (Ctrl+Shift+S)', () => editorApi?.execFormat('strike'))}
+
+      {sep()}
+
+      {/* Alignment */}
+      {btn('≡L', 'Align left', () => editorApi?.setAlignmentCmd('left'))}
+      {btn('≡C', 'Align center', () => editorApi?.setAlignmentCmd('center'))}
+      {btn('≡R', 'Align right', () => editorApi?.setAlignmentCmd('right'))}
+
+      {sep()}
+
+      {/* Lists */}
+      {btn('• ≡', 'Bullet list', () => editorApi?.toggleListCmd('bullet'))}
+      {btn('1. ≡', 'Numbered list', () => editorApi?.toggleListCmd('ordered'))}
+
+      {sep()}
+
+      {/* Math */}
+      {btn('∫', 'Insert inline math ($)', () => editorApi?.insertMathInlineCmd())}
+      {btn('∫□', 'Insert math block', () => editorApi?.insertMathBlockCmd())}
+    </div>
+  );
 }
