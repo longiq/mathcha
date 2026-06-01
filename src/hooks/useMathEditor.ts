@@ -5,11 +5,14 @@ import { splitBlock } from 'prosemirror-commands';
 import { Node } from 'prosemirror-model';
 import { mathSchema, emptyDoc } from '../lib/prosemirror/schema';
 import { MathNodeView, MathBlockNodeView } from '../lib/prosemirror/mathNodeView';
+import { GraphNodeView } from '../lib/prosemirror/graphNodeView';
 import { buildPlugins } from '../lib/prosemirror/plugins';
 import {
   insertMathInline,
   insertMathBlock,
   updateMathNode,
+  insertGraph,
+  updateGraphNode,
   toggleMark,
   setHeading,
   setAlignment,
@@ -25,7 +28,7 @@ export function useMathEditor() {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const { docJson, setDocJson } = useDocumentStore();
-  const { openMathEdit, pendingSymbol, clearPendingSymbol, setEditorApi } = useEditorStore();
+  const { openMathEdit, pendingSymbol, clearPendingSymbol, setEditorApi, openGraphEdit } = useEditorStore();
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -54,6 +57,10 @@ export function useMathEditor() {
         math_block: (node, view, getPos) =>
           new MathBlockNodeView(node, view, getPos, (latex, pos) => {
             openMathEdit(latex, pos);
+          }),
+        graph_block: (node, view, getPos) =>
+          new GraphNodeView(node, view, getPos, (attrs, pos) => {
+            openGraphEdit(attrs, pos);
           }),
       },
       dispatchTransaction(tr) {
@@ -99,6 +106,10 @@ export function useMathEditor() {
         setFontSize(size)(view.state, view.dispatch, view);
         view.focus();
       },
+      insertGraphCmd: (exprs = ['sin(x)', 'cos(x)']) => {
+        insertGraph(exprs)(view.state, view.dispatch, view);
+        view.focus();
+      },
     };
 
     setEditorApi(api);
@@ -110,6 +121,10 @@ export function useMathEditor() {
       setHeading: (level: number) => { setHeading(level as 0|1|2|3)(view.state, view.dispatch, view); view.focus(); },
       insertText: (text: string) => { view.dispatch(view.state.tr.insertText(text)); view.focus(); },
       pressEnter: () => { splitBlock(view.state, view.dispatch); view.focus(); },
+      insertGraph: (exprs: string[], xMin: number, xMax: number, yMin: number, yMax: number) => {
+        insertGraph(exprs, xMin, xMax, yMin, yMax)(view.state, view.dispatch, view);
+        view.focus();
+      },
     };
 
     return () => {
@@ -135,5 +150,11 @@ export function useMathEditor() {
     updateMathNode(pos, latex)(view.state, view.dispatch);
   }, []);
 
-  return { containerRef, viewRef, updateMathAt };
+  const updateGraphAt = useCallback((pos: number, attrs: Record<string, unknown>) => {
+    const view = viewRef.current;
+    if (!view) return;
+    updateGraphNode(pos, attrs)(view.state, view.dispatch);
+  }, []);
+
+  return { containerRef, viewRef, updateMathAt, updateGraphAt };
 }

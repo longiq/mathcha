@@ -104,6 +104,23 @@
   background: rgba(58, 142, 246, 0.04);
 }
 
+/* Graph block node */
+.graph-block-node {
+  display: block;
+  text-align: center;
+  padding: 10px 0;
+  cursor: pointer;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  margin: 6px 0;
+  user-select: none;
+  transition: border-color 0.1s;
+}
+.graph-block-node:hover {
+  border-color: #3a8ef6;
+  background: rgba(58, 142, 246, 0.03);
+}
+
 /* Placeholder */
 .pm-placeholder:first-child::before {
   content: attr(data-placeholder);

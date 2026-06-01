@@ -8,6 +8,7 @@ export interface EditorApi {
   insertMathBlockCmd: () => void;
   toggleListCmd: (type: 'bullet' | 'ordered') => void;
   setFontSize: (size: 'small' | 'normal' | 'large' | 'huge') => void;
+  insertGraphCmd: (exprs?: string[]) => void;
 }
 
 interface EditorStore {
@@ -16,6 +17,7 @@ interface EditorStore {
   activeCategory: string;
   pendingSymbol: string | null;
   mathEdit: { latex: string; pos: number } | null;
+  graphEdit: { attrs: Record<string, unknown>; pos: number } | null;
   editorApi: EditorApi | null;
 
   setActiveTool: (tool: 'select' | 'text' | 'math' | 'draw' | 'image' | 'table') => void;
@@ -25,6 +27,8 @@ interface EditorStore {
   clearPendingSymbol: () => void;
   openMathEdit: (latex: string, pos: number) => void;
   closeMathEdit: () => void;
+  openGraphEdit: (attrs: Record<string, unknown>, pos: number) => void;
+  closeGraphEdit: () => void;
   setEditorApi: (api: EditorApi | null) => void;
 }
 
@@ -34,6 +38,7 @@ export const useEditorStore = create<EditorStore>((set) => ({
   activeCategory: 'greek',
   pendingSymbol: null,
   mathEdit: null,
+  graphEdit: null,
   editorApi: null,
 
   setActiveTool: (tool) => set((s) => ({
@@ -46,5 +51,7 @@ export const useEditorStore = create<EditorStore>((set) => ({
   clearPendingSymbol: () => set({ pendingSymbol: null }),
   openMathEdit: (latex, pos) => set({ mathEdit: { latex, pos } }),
   closeMathEdit: () => set({ mathEdit: null }),
+  openGraphEdit: (attrs, pos) => set({ graphEdit: { attrs, pos } }),
+  closeGraphEdit: () => set({ graphEdit: null }),
   setEditorApi: (api) => set({ editorApi: api }),
 }));

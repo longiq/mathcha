@@ -65,6 +65,11 @@ export function FormatToolbar() {
       {/* Math insert */}
       <TBtn title="Insert inline math" onMouseDown={call(() => api?.insertMathInlineCmd())} mono>∫<sub style={{fontSize:8}}>x</sub></TBtn>
       <TBtn title="Insert math block"  onMouseDown={call(() => api?.insertMathBlockCmd())} mono>∫<sub style={{fontSize:8}}>□</sub></TBtn>
+
+      <Sep />
+
+      {/* Graph insert */}
+      <TBtn title="Insert graph" onMouseDown={call(() => api?.insertGraphCmd())}>📈</TBtn>
     </div>
   );
 }

@@ -47,6 +47,44 @@ export const mathSchema = new Schema({
       },
     },
 
+    graph_block: {
+      attrs: {
+        expressions: { default: '[]' },
+        xMin: { default: -6 },
+        xMax: { default: 6 },
+        yMin: { default: -4 },
+        yMax: { default: 4 },
+        width: { default: 480 },
+        height: { default: 300 },
+      },
+      group: 'block',
+      atom: true,
+      parseDOM: [{ tag: 'div[data-graph]', getAttrs(dom) {
+        const el = dom as HTMLElement;
+        return {
+          expressions: el.getAttribute('data-graph') || '[]',
+          xMin: Number(el.getAttribute('data-xmin') ?? -6),
+          xMax: Number(el.getAttribute('data-xmax') ?? 6),
+          yMin: Number(el.getAttribute('data-ymin') ?? -4),
+          yMax: Number(el.getAttribute('data-ymax') ?? 4),
+          width: Number(el.getAttribute('data-w') ?? 480),
+          height: Number(el.getAttribute('data-h') ?? 300),
+        };
+      }}],
+      toDOM(node) {
+        return ['div', {
+          'data-graph': node.attrs.expressions,
+          'data-xmin': node.attrs.xMin,
+          'data-xmax': node.attrs.xMax,
+          'data-ymin': node.attrs.yMin,
+          'data-ymax': node.attrs.yMax,
+          'data-w': node.attrs.width,
+          'data-h': node.attrs.height,
+          class: 'graph-block-node',
+        }] as const;
+      },
+    },
+
     bullet_list: {
       content: 'list_item+',
       group: 'block',

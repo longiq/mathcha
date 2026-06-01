@@ -1,10 +1,11 @@
 import { useMathEditor } from '../../hooks/useMathEditor';
 import { useEditorStore } from '../../store/editorStore';
 import { MathInlineEditor } from './MathInlineEditor';
+import { GraphEditor } from './GraphEditor';
 
 export function DocumentEditor() {
-  const { containerRef, updateMathAt } = useMathEditor();
-  const { mathEdit } = useEditorStore();
+  const { containerRef, updateMathAt, updateGraphAt } = useMathEditor();
+  const { mathEdit, graphEdit } = useEditorStore();
 
   return (
     <div style={{
@@ -22,6 +23,7 @@ export function DocumentEditor() {
         style={{ outline: 'none', color: '#1a1a1a', fontSize: 15, lineHeight: 1.8 }}
       />
       {mathEdit && <MathInlineEditor updateMathAt={updateMathAt} />}
+      {graphEdit && <GraphEditor updateGraphAt={updateGraphAt} />}
     </div>
   );
 }
