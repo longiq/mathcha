@@ -5,54 +5,62 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    box-sizing: border-box;
-  }
+  * { box-sizing: border-box; }
   body {
-    @apply bg-gray-950 text-gray-100 font-sans;
     margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #1e1e1e;
+    color: #ccc;
+    font-size: 14px;
   }
 }
 
+/* ProseMirror */
 .ProseMirror {
   outline: none;
-  min-height: 40px;
+  min-height: 2em;
   line-height: 1.8;
+  color: #1a1a1a;
+  font-size: 15px;
+  caret-color: #3a8ef6;
 }
-
-.ProseMirror p {
-  margin: 0.25rem 0;
-}
-
-.math-node {
-  display: inline-block;
-  cursor: pointer;
-  padding: 1px 2px;
-  border-radius: 3px;
-  border: 1px solid transparent;
-  user-select: none;
-}
-
-.math-node:hover, .math-node.selected {
-  border-color: #0ea5e9;
-  background: rgba(14, 165, 233, 0.1);
-}
-
-.math-node-error {
-  color: #ef4444;
-  font-size: 0.8em;
-  border-color: #ef4444;
-}
-
-.ProseMirror-selectednode .math-node {
-  border-color: #0ea5e9;
-  background: rgba(14, 165, 233, 0.15);
-}
+.ProseMirror p { margin: 0.15em 0; }
+.ProseMirror strong { font-weight: 700; }
+.ProseMirror em { font-style: italic; }
+.ProseMirror u { text-decoration: underline; }
 
 .pm-placeholder:first-child::before {
   content: attr(data-placeholder);
-  color: #6b7280;
+  color: #bbb;
   pointer-events: none;
   float: left;
   height: 0;
+  font-style: italic;
 }
+
+/* Inline math nodes */
+.math-node {
+  display: inline-block;
+  cursor: pointer;
+  padding: 0 2px;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  user-select: none;
+  vertical-align: middle;
+  transition: background 0.1s, border-color 0.1s;
+}
+.math-node:hover {
+  border-color: #3a8ef6;
+  background: rgba(58,142,246,0.08);
+}
+.ProseMirror-selectednode .math-node,
+.math-node.selected {
+  border-color: #3a8ef6;
+  background: rgba(58,142,246,0.12);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }

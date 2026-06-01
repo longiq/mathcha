@@ -1,5 +1,3 @@
-import { Search } from 'lucide-react';
-
 interface Props {
   value: string;
   onChange: (v: string) => void;
@@ -7,14 +5,20 @@ interface Props {
 
 export function SymbolSearch({ value, onChange }: Props) {
   return (
-    <div className="relative px-2 py-2">
-      <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+    <div style={{ padding: '5px 6px', flexShrink: 0, borderBottom: '1px solid #333' }}>
       <input
         type="text"
         value={value}
         onChange={e => onChange(e.target.value)}
-        placeholder="Search symbols..."
-        className="w-full bg-gray-800 border border-gray-600 rounded pl-7 pr-2 py-1.5 text-sm text-gray-200 focus:outline-none focus:border-sky-500 placeholder-gray-500"
+        placeholder="Search..."
+        style={{
+          width: '100%', background: '#1e1e1e',
+          border: '1px solid #444', borderRadius: 3,
+          color: '#ccc', fontSize: 12, padding: '4px 7px',
+          outline: 'none', boxSizing: 'border-box',
+        }}
+        onFocus={e => (e.currentTarget.style.borderColor = '#3a8ef6')}
+        onBlur={e => (e.currentTarget.style.borderColor = '#444')}
       />
     </div>
   );

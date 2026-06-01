@@ -15,28 +15,35 @@ export function MathCell({ cellId, initialContent }: Props) {
   const { setActiveCell, activeCellId } = useEditorStore();
   const isActive = activeCellId === cellId;
 
-  const handleChange = (latex: string) => {
-    updateCell(cellId, latex);
-  };
+  const handleChange = (latex: string) => updateCell(cellId, latex);
 
   return (
     <div
-      className={`px-4 py-2 rounded transition-colors ${isActive ? 'bg-gray-800/50' : 'hover:bg-gray-800/20'}`}
       onClick={() => setActiveCell(cellId)}
+      style={{
+        padding: '6px 8px',
+        borderRadius: 3,
+        background: isActive ? 'rgba(58,142,246,0.04)' : 'transparent',
+        borderLeft: isActive ? '2px solid #3a8ef6' : '2px solid transparent',
+        transition: 'all 0.1s',
+      }}
     >
       {editing ? (
-        <div className="py-2">
+        <div style={{ padding: '6px 0' }}>
           <LatexInput
             value={initialContent}
             onChange={handleChange}
             display
-            placeholder="Enter display math (e.g. \int_0^\infty e^{-x^2}\,dx)"
+            placeholder="\int_0^\infty e^{-x^2}\,dx"
             autoFocus
           />
-          <div className="flex justify-end mt-2">
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 6 }}>
             <button
-              onClick={() => setEditing(false)}
-              className="text-sm px-3 py-1 bg-sky-600 hover:bg-sky-500 text-white rounded"
+              onClick={e => { e.stopPropagation(); setEditing(false); }}
+              style={{
+                background: '#3a8ef6', border: 'none', borderRadius: 3,
+                color: '#fff', fontSize: 12, padding: '4px 12px', cursor: 'pointer',
+              }}
             >
               Done
             </button>
@@ -44,17 +51,29 @@ export function MathCell({ cellId, initialContent }: Props) {
         </div>
       ) : (
         <div
-          className="py-3 flex justify-center cursor-pointer group relative"
           onDoubleClick={() => setEditing(true)}
+          style={{
+            padding: '10px 0', display: 'flex', justifyContent: 'center',
+            cursor: 'default', position: 'relative',
+            minHeight: 40, alignItems: 'center',
+          }}
         >
           {initialContent ? (
             <MathRenderer latex={initialContent} display />
           ) : (
-            <span className="text-gray-500 italic">Double-click to edit math block</span>
+            <span style={{ color: '#bbb', fontStyle: 'italic', fontSize: 13 }}>
+              Double-click to edit math block
+            </span>
           )}
-          <span className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 text-xs text-gray-500">
-            double-click to edit
-          </span>
+          {isActive && (
+            <span style={{
+              position: 'absolute', right: 4, top: 4,
+              fontSize: 11, color: '#aaa', background: '#f0f0f0',
+              padding: '1px 5px', borderRadius: 2,
+            }}>
+              double-click to edit
+            </span>
+          )}
         </div>
       )}
     </div>

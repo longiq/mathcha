@@ -8,27 +8,48 @@ interface Props {
 }
 
 export function SymbolButton({ symbol, onClick }: Props) {
-  const [showTooltip, setShowTooltip] = useState(false);
+  const [hover, setHover] = useState(false);
 
   return (
-    <div className="relative">
+    <div style={{ position: 'relative' }}>
       <button
-        className="w-9 h-9 flex items-center justify-center text-lg text-gray-300 hover:text-white hover:bg-gray-700 rounded transition-colors"
         onClick={() => onClick(symbol.latex)}
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
         title={symbol.label}
+        style={{
+          width: '100%', height: 34,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: hover ? '#3a3a3a' : 'none',
+          border: 'none', borderRadius: 3,
+          cursor: 'pointer', color: '#ccc',
+          fontSize: 16, transition: 'background 0.1s, color 0.1s',
+        }}
       >
         {symbol.display}
       </button>
 
-      {showTooltip && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 bg-gray-900 border border-gray-600 rounded-lg p-3 shadow-xl min-w-[120px] pointer-events-none">
-          <div className="flex justify-center mb-2">
+      {hover && (
+        <div style={{
+          position: 'fixed',
+          zIndex: 9999,
+          background: '#1a1a1a',
+          border: '1px solid #444',
+          borderRadius: 6,
+          padding: '10px 12px',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.6)',
+          pointerEvents: 'none',
+          minWidth: 110,
+          transform: 'translateX(10px)',
+          left: 220,
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 6, color: '#fff', fontSize: 18 }}>
             <MathRenderer latex={symbol.latex} />
           </div>
-          <div className="text-xs text-gray-400 text-center">{symbol.label}</div>
-          <div className="text-xs text-gray-500 text-center font-mono mt-0.5">{symbol.latex}</div>
+          <div style={{ color: '#ddd', fontSize: 12, textAlign: 'center' }}>{symbol.label}</div>
+          <div style={{ color: '#777', fontSize: 11, textAlign: 'center', fontFamily: 'monospace', marginTop: 2 }}>
+            {symbol.latex}
+          </div>
         </div>
       )}
     </div>
