@@ -1,89 +1,101 @@
-import { Bold, Italic, Underline } from 'lucide-react';
+import { Bold, Italic, Underline, Strikethrough, AlignLeft, AlignCenter, AlignRight, List, ListOrdered } from 'lucide-react';
 import { useEditorStore } from '../../store/editorStore';
 
-const QUICK_MATH = [
-  { label: 'x²', latex: 'x^{2}', title: 'Superscript' },
-  { label: 'xₙ', latex: 'x_{n}', title: 'Subscript' },
-  { label: '½', latex: '\\frac{a}{b}', title: 'Fraction' },
-  { label: '√', latex: '\\sqrt{x}', title: 'Square root' },
-  { label: '∑', latex: '\\sum_{i=1}^{n}', title: 'Sum' },
-  { label: '∫', latex: '\\int_{a}^{b}', title: 'Integral' },
-  { label: '∏', latex: '\\prod_{i=1}^{n}', title: 'Product' },
-  { label: 'lim', latex: '\\lim_{x \\to 0}', title: 'Limit' },
-  { label: '∂', latex: '\\frac{\\partial f}{\\partial x}', title: 'Partial derivative' },
-  { label: '∞', latex: '\\infty', title: 'Infinity' },
-  { label: '∇', latex: '\\nabla', title: 'Nabla' },
-  { label: 'e^x', latex: 'e^{x}', title: 'Exponential' },
-  { label: 'log', latex: '\\log_{b}(x)', title: 'Logarithm' },
-  { label: 'sin', latex: '\\sin(x)', title: 'Sine' },
-  { label: '[]', latex: '\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}', title: 'Matrix 2x2' },
-];
-
 export function FormatToolbar() {
-  const { insertSymbol } = useEditorStore();
+  const api = useEditorStore(s => s.editorApi);
+
+  const call = (fn: () => void) => (e: React.MouseEvent) => {
+    e.preventDefault(); // don't blur editor
+    fn();
+  };
 
   return (
     <div style={{
-      height: 36,
-      background: '#2c2c2c',
-      borderBottom: '1px solid #222',
-      display: 'flex',
-      alignItems: 'center',
-      padding: '0 10px',
-      gap: 2,
-      flexShrink: 0,
-      overflowX: 'auto',
+      height: 36, background: '#3d3d3d', borderBottom: '1px solid #2a2a2a',
+      display: 'flex', alignItems: 'center', padding: '0 8px', gap: 1,
+      flexShrink: 0, overflowX: 'auto', userSelect: 'none',
     }}>
-      <TBtn title="Bold (Ctrl+B)" onClick={() => document.execCommand('bold')}>
-        <Bold size={13} />
-      </TBtn>
-      <TBtn title="Italic (Ctrl+I)" onClick={() => document.execCommand('italic')}>
-        <Italic size={13} />
-      </TBtn>
-      <TBtn title="Underline (Ctrl+U)" onClick={() => document.execCommand('underline')}>
-        <Underline size={13} />
-      </TBtn>
+      {/* Heading dropdown */}
+      <select
+        defaultValue="0"
+        onChange={e => { api?.setHeadingLevel(Number(e.target.value) as 0|1|2|3); }}
+        onMouseDown={e => e.stopPropagation()}
+        style={{
+          background: '#505050', color: '#ddd', border: '1px solid #666',
+          borderRadius: 3, fontSize: 12, padding: '2px 4px', height: 24,
+          cursor: 'pointer', outline: 'none', marginRight: 2,
+        }}
+      >
+        <option value="0">Normal</option>
+        <option value="1">Heading 1</option>
+        <option value="2">Heading 2</option>
+        <option value="3">Heading 3</option>
+      </select>
 
-      <Divider />
+      <Sep />
 
-      {QUICK_MATH.map(m => (
-        <TBtn key={m.latex} title={m.title} onClick={() => insertSymbol(m.latex)} mono>
-          {m.label}
-        </TBtn>
-      ))}
+      {/* Font size */}
+      <TBtn title="Small text"    onMouseDown={call(() => api?.setFontSize('small'))}>A<sup style={{fontSize:8}}>−</sup></TBtn>
+      <TBtn title="Normal text"   onMouseDown={call(() => api?.setFontSize('normal'))}>A</TBtn>
+      <TBtn title="Large text"    onMouseDown={call(() => api?.setFontSize('large'))}>A<sup style={{fontSize:8}}>+</sup></TBtn>
+
+      <Sep />
+
+      {/* Text format */}
+      <TBtn title="Bold (Ctrl+B)"        onMouseDown={call(() => api?.execFormat('bold'))}><Bold size={13}/></TBtn>
+      <TBtn title="Italic (Ctrl+I)"      onMouseDown={call(() => api?.execFormat('italic'))}><Italic size={13}/></TBtn>
+      <TBtn title="Underline (Ctrl+U)"   onMouseDown={call(() => api?.execFormat('underline'))}><Underline size={13}/></TBtn>
+      <TBtn title="Strikethrough"        onMouseDown={call(() => api?.execFormat('strike'))}><Strikethrough size={13}/></TBtn>
+
+      <Sep />
+
+      {/* Alignment */}
+      <TBtn title="Align left"    onMouseDown={call(() => api?.setAlignmentCmd('left'))}><AlignLeft size={13}/></TBtn>
+      <TBtn title="Align center"  onMouseDown={call(() => api?.setAlignmentCmd('center'))}><AlignCenter size={13}/></TBtn>
+      <TBtn title="Align right"   onMouseDown={call(() => api?.setAlignmentCmd('right'))}><AlignRight size={13}/></TBtn>
+
+      <Sep />
+
+      {/* Lists */}
+      <TBtn title="Bullet list"   onMouseDown={call(() => api?.toggleListCmd('bullet'))}><List size={13}/></TBtn>
+      <TBtn title="Ordered list"  onMouseDown={call(() => api?.toggleListCmd('ordered'))}><ListOrdered size={13}/></TBtn>
+
+      <Sep />
+
+      {/* Math insert */}
+      <TBtn title="Insert inline math" onMouseDown={call(() => api?.insertMathInlineCmd())} mono>∫<sub style={{fontSize:8}}>x</sub></TBtn>
+      <TBtn title="Insert math block"  onMouseDown={call(() => api?.insertMathBlockCmd())} mono>∫<sub style={{fontSize:8}}>□</sub></TBtn>
+
+      <Sep />
+
+      {/* Graph insert */}
+      <TBtn title="Insert graph" onMouseDown={call(() => api?.insertGraphCmd())}>📈</TBtn>
     </div>
   );
 }
 
-function TBtn({ children, onClick, title, mono }: {
-  children: React.ReactNode;
-  onClick: () => void;
-  title?: string;
-  mono?: boolean;
+function TBtn({ children, onMouseDown, title, mono }: {
+  children: React.ReactNode; onMouseDown: (e: React.MouseEvent) => void;
+  title?: string; mono?: boolean;
 }) {
   return (
     <button
-      onClick={onClick}
-      title={title}
+      onMouseDown={onMouseDown} title={title}
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         background: 'none', border: 'none', borderRadius: 3,
-        cursor: 'pointer', color: '#bbb',
-        height: 26, minWidth: 28, padding: '0 5px',
-        fontSize: mono ? 12 : 13,
-        fontFamily: mono ? 'monospace' : 'inherit',
-        fontWeight: 600,
-        transition: 'background 0.1s, color 0.1s',
-        whiteSpace: 'nowrap',
+        cursor: 'pointer', color: '#ccc', height: 26, minWidth: 26, padding: '0 4px',
+        fontSize: mono ? 13 : 13, fontFamily: mono ? 'serif' : 'inherit',
+        fontWeight: 500, transition: 'background 0.1s, color 0.1s',
       }}
-      onMouseEnter={e => { e.currentTarget.style.background = '#3a3a3a'; e.currentTarget.style.color = '#fff'; }}
-      onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = '#bbb'; }}
+      onMouseEnter={e => { e.currentTarget.style.background = '#555'; e.currentTarget.style.color = '#fff'; }}
+      onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = '#ccc'; }}
     >
       {children}
     </button>
   );
 }
 
-function Divider() {
-  return <div style={{ width: 1, height: 20, background: '#444', margin: '0 4px' }} />;
+function Sep() {
+  return <div style={{ width: 1, height: 18, background: '#555', margin: '0 3px', flexShrink: 0 }} />;
 }

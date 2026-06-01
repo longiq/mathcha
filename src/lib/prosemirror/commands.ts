@@ -127,5 +127,26 @@ export const setFontSize = (size: 'small' | 'normal' | 'large' | 'huge'): Comman
   return true;
 };
 
+<<<<<<< HEAD
+export const insertGraph = (expressions: string[] = [], xMin = -6, xMax = 6, yMin = -4, yMax = 4): Command => (state, dispatch) => {
+  const node = mathSchema.nodes.graph_block.create({
+    expressions: JSON.stringify(expressions),
+    xMin, xMax, yMin, yMax, width: 480, height: 300,
+  });
+  if (dispatch) dispatch(state.tr.replaceSelectionWith(node));
+  return true;
+};
+
+export const updateGraphNode = (pos: number, attrs: Record<string, unknown>): Command => (state, dispatch) => {
+  const node = state.doc.nodeAt(pos);
+  if (!node || node.type !== mathSchema.nodes.graph_block) return false;
+  if (dispatch) {
+    dispatch(state.tr.setNodeMarkup(pos, undefined, { ...node.attrs, ...attrs }));
+  }
+  return true;
+};
+
+=======
+>>>>>>> origin/main
 // Re-export NodeSelection and TextSelection for use in other modules
 export { NodeSelection, TextSelection };
