@@ -1,39 +1,50 @@
 import { create } from 'zustand';
 
-interface MathEditState {
-  cellId: string;
-  latex: string;
-  pos: number;
+export interface EditorApi {
+  execFormat: (cmd: 'bold' | 'italic' | 'underline' | 'strike') => void;
+  setHeadingLevel: (level: 0 | 1 | 2 | 3) => void;
+  setAlignmentCmd: (align: 'left' | 'center' | 'right') => void;
+  insertMathInlineCmd: () => void;
+  insertMathBlockCmd: () => void;
+  toggleListCmd: (type: 'bullet' | 'ordered') => void;
+  setFontSize: (size: 'small' | 'normal' | 'large' | 'huge') => void;
 }
 
 interface EditorStore {
-  activeCellId: string | null;
-  sidebarOpen: boolean;
+  activeTool: 'select' | 'text' | 'math' | 'draw' | 'image' | 'table';
+  symbolPanelOpen: boolean;
   activeCategory: string;
   pendingSymbol: string | null;
-  mathEdit: MathEditState | null;
+  mathEdit: { latex: string; pos: number } | null;
+  editorApi: EditorApi | null;
 
-  setActiveCell: (id: string | null) => void;
-  toggleSidebar: () => void;
+  setActiveTool: (tool: 'select' | 'text' | 'math' | 'draw' | 'image' | 'table') => void;
+  toggleSymbolPanel: () => void;
   setActiveCategory: (cat: string) => void;
   insertSymbol: (latex: string) => void;
   clearPendingSymbol: () => void;
-  openMathEdit: (state: MathEditState) => void;
+  openMathEdit: (latex: string, pos: number) => void;
   closeMathEdit: () => void;
+  setEditorApi: (api: EditorApi | null) => void;
 }
 
 export const useEditorStore = create<EditorStore>((set) => ({
-  activeCellId: null,
-  sidebarOpen: true,
+  activeTool: 'text',
+  symbolPanelOpen: false,
   activeCategory: 'greek',
   pendingSymbol: null,
   mathEdit: null,
+  editorApi: null,
 
-  setActiveCell: (id) => set({ activeCellId: id }),
-  toggleSidebar: () => set(s => ({ sidebarOpen: !s.sidebarOpen })),
+  setActiveTool: (tool) => set((s) => ({
+    activeTool: tool,
+    symbolPanelOpen: tool === 'math' ? !s.symbolPanelOpen : s.symbolPanelOpen,
+  })),
+  toggleSymbolPanel: () => set((s) => ({ symbolPanelOpen: !s.symbolPanelOpen })),
   setActiveCategory: (cat) => set({ activeCategory: cat }),
   insertSymbol: (latex) => set({ pendingSymbol: latex }),
   clearPendingSymbol: () => set({ pendingSymbol: null }),
-  openMathEdit: (state) => set({ mathEdit: state }),
+  openMathEdit: (latex, pos) => set({ mathEdit: { latex, pos } }),
   closeMathEdit: () => set({ mathEdit: null }),
+  setEditorApi: (api) => set({ editorApi: api }),
 }));

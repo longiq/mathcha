@@ -1,22 +1,22 @@
-import { useEditorStore } from '../../store/editorStore';
 import { TopBar } from './TopBar';
+import { FormatToolbar } from './FormatToolbar';
+import { ToolSidebar } from './ToolSidebar';
 import { SymbolSidebar } from '../sidebar/SymbolSidebar';
-import { Notebook } from '../notebook/Notebook';
+import { DocumentEditor } from '../editor/DocumentEditor';
+import { useEditorStore } from '../../store/editorStore';
 
 export function AppShell() {
-  const sidebarOpen = useEditorStore(s => s.sidebarOpen);
+  const { symbolPanelOpen } = useEditorStore();
 
   return (
-    <div className="flex flex-col h-screen bg-gray-950 overflow-hidden">
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#1e1e1e', overflow: 'hidden' }}>
       <TopBar />
-      <div className="flex flex-1 overflow-hidden">
-        {sidebarOpen && (
-          <div className="w-52 flex-shrink-0 overflow-hidden">
-            <SymbolSidebar />
-          </div>
-        )}
-        <div className="flex-1 overflow-y-auto">
-          <Notebook />
+      <FormatToolbar />
+      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+        <ToolSidebar />
+        {symbolPanelOpen && <SymbolSidebar />}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '0 16px' }}>
+          <DocumentEditor />
         </div>
       </div>
     </div>
