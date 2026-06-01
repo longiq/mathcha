@@ -1,121 +1,61 @@
-@import 'katex/dist/katex.min.css';
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer base {
-  * {
-    box-sizing: border-box;
-  }
-  body {
-    margin: 0;
-    background: #1e1e1e;
-    color: #f0f0f0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  }
+* {
+  box-sizing: border-box;
 }
 
-/* ProseMirror editor styles */
-.ProseMirror {
-  outline: none;
-  min-height: 200px;
-  color: #1a1a1a;
-  font-size: 15px;
-  line-height: 1.8;
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.ProseMirror p {
-  margin: 0.3em 0;
+/* Math inline nodes inside contenteditable */
+.math-inline {
+  display: inline-block;
+  vertical-align: middle;
+  cursor: pointer;
+  padding: 0 2px;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  transition: border-color 0.1s, background 0.1s;
+  user-select: none;
 }
 
-.ProseMirror h1 {
-  font-size: 2em;
-  font-weight: 700;
-  margin: 0.5em 0 0.3em;
-  color: #111;
+.math-inline:hover {
+  border-color: #3a8ef6;
+  background: rgba(58, 142, 246, 0.08);
 }
 
-.ProseMirror h2 {
-  font-size: 1.5em;
-  font-weight: 700;
-  margin: 0.5em 0 0.25em;
-  color: #111;
+/* Placeholders */
+[contenteditable]:empty::before {
+  content: attr(data-placeholder);
+  color: #bbb;
+  font-style: italic;
+  pointer-events: none;
 }
 
-.ProseMirror h3 {
-  font-size: 1.2em;
-  font-weight: 700;
-  margin: 0.4em 0 0.2em;
-  color: #111;
-}
-
-.ProseMirror ul {
+/* Lists inside contenteditable */
+[contenteditable] ul {
   list-style: disc;
   padding-left: 1.5em;
   margin: 0.3em 0;
 }
 
-.ProseMirror ol {
+[contenteditable] ol {
   list-style: decimal;
   padding-left: 1.5em;
   margin: 0.3em 0;
 }
 
-.ProseMirror li {
-  margin: 0.1em 0;
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-/* Math inline node */
-.math-node {
-  display: inline-block;
-  cursor: pointer;
-  padding: 1px 3px;
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ccc;
   border-radius: 3px;
-  border: 1px solid transparent;
-  user-select: none;
-  vertical-align: middle;
-}
-
-.math-node:hover {
-  border-color: #3a8ef6;
-  background: rgba(58, 142, 246, 0.08);
-}
-
-.ProseMirror-selectednode .math-node {
-  border-color: #3a8ef6;
-  background: rgba(58, 142, 246, 0.15);
-}
-
-/* Math block node */
-.math-block-node {
-  display: block;
-  text-align: center;
-  padding: 14px 0;
-  cursor: pointer;
-  border-radius: 3px;
-  border: 1px solid transparent;
-  margin: 4px 0;
-  user-select: none;
-}
-
-.math-block-node:hover {
-  border-color: #3a8ef6;
-  background: rgba(58, 142, 246, 0.04);
-}
-
-/* Placeholder */
-.pm-placeholder:first-child::before {
-  content: attr(data-placeholder);
-  color: #aaa;
-  pointer-events: none;
-  float: left;
-  height: 0;
-  font-style: italic;
-}
-
-/* ProseMirror selection */
-.ProseMirror-focused .ProseMirror-selectednode {
-  outline: 2px solid #3a8ef6;
-  outline-offset: 1px;
 }
