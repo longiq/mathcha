@@ -1,0 +1,58 @@
+@import 'katex/dist/katex.min.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    @apply bg-gray-950 text-gray-100 font-sans;
+    margin: 0;
+  }
+}
+
+.ProseMirror {
+  outline: none;
+  min-height: 40px;
+  line-height: 1.8;
+}
+
+.ProseMirror p {
+  margin: 0.25rem 0;
+}
+
+.math-node {
+  display: inline-block;
+  cursor: pointer;
+  padding: 1px 2px;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  user-select: none;
+}
+
+.math-node:hover, .math-node.selected {
+  border-color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.1);
+}
+
+.math-node-error {
+  color: #ef4444;
+  font-size: 0.8em;
+  border-color: #ef4444;
+}
+
+.ProseMirror-selectednode .math-node {
+  border-color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.15);
+}
+
+.pm-placeholder:first-child::before {
+  content: attr(data-placeholder);
+  color: #6b7280;
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
